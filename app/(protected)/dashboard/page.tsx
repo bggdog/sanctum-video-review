@@ -2,12 +2,18 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { createClient } from "@/lib/supabase/server";
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   const supabase = await createClient();
 
   // Get video counts by status
-  const { data: videos } = await supabase.from("videos").select("status");
+  const { data: videos, error: videosError } = await supabase.from("videos").select("status");
+  
+  if (videosError) {
+    console.error("Error fetching videos:", videosError);
+  }
 
   const statusCounts = {
     ideation: 0,
@@ -24,11 +30,15 @@ export default async function DashboardPage() {
   });
 
   // Get recent videos
-  const { data: recentVideos } = await supabase
+  const { data: recentVideos, error: recentVideosError } = await supabase
     .from("videos")
     .select("*")
     .order("created_at", { ascending: false })
     .limit(5);
+    
+  if (recentVideosError) {
+    console.error("Error fetching recent videos:", recentVideosError);
+  }
 
   return (
     <div className="space-y-6">

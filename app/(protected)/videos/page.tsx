@@ -2,12 +2,18 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import VideoCard from "@/components/VideoCard";
 
+export const dynamic = 'force-dynamic';
+
 export default async function VideosPage() {
   const supabase = await createClient();
-  const { data: videos } = await supabase
+  const { data: videos, error } = await supabase
     .from("videos")
     .select("*")
     .order("created_at", { ascending: false });
+    
+  if (error) {
+    console.error("Error fetching videos:", error);
+  }
 
   return (
     <div className="space-y-6">
