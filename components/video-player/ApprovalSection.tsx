@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { CheckCircle, XCircle, Circle } from "lucide-react";
 import { Approval } from "@/types/database";
 import toast from "react-hot-toast";
@@ -13,7 +12,6 @@ interface ApprovalSectionProps {
 }
 
 export default function ApprovalSection({ videoId }: ApprovalSectionProps) {
-  const { data: session } = useSession();
   const [approval, setApproval] = useState<Approval | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -24,22 +22,18 @@ export default function ApprovalSection({ videoId }: ApprovalSectionProps) {
 
   useEffect(() => {
     fetchApproval();
-  }, [videoId, session]);
+  }, [videoId]);
 
   const fetchApproval = async () => {
-    if (!session?.user?.id) return;
-    
     try {
       const response = await fetch(`/api/approvals?video_id=${videoId}`);
       if (response.ok) {
         const data = await response.json();
-        // Find current user's approval
-        const userApproval = data.approvals?.find(
-          (a: Approval) => a.user_id === session.user.id
-        );
-        if (userApproval) {
-          setApproval(userApproval);
-          setNotes(userApproval.notes || "");
+        // Get the first approval (since we don't have users anymore)
+        const firstApproval = data.approvals?.[0];
+        if (firstApproval) {
+          setApproval(firstApproval);
+          setNotes(firstApproval.notes || "");
         }
       }
     } catch (error) {

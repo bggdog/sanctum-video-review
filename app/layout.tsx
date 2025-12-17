@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
-import SessionProvider from "@/components/providers/SessionProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 export const metadata: Metadata = {
@@ -18,15 +17,13 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <ThemeProvider>
-          <SessionProvider>
-            {children}
-            <Toaster 
-              position="top-right"
-              toastOptions={{
-                className: 'dark:bg-gray-800 dark:text-white',
-              }}
-            />
-          </SessionProvider>
+          {children}
+          <Toaster 
+            position="top-right"
+            toastOptions={{
+              className: 'dark:bg-gray-800 dark:text-white',
+            }}
+          />
         </ThemeProvider>
       </body>
     </html>
