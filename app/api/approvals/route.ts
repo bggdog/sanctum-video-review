@@ -1,16 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/config";
 import { createClient } from "@/lib/supabase/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const { searchParams } = new URL(request.url);
     const videoId = searchParams.get("video_id");
 
@@ -43,12 +35,6 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const body = await request.json();
     const { video_id, approved, notes } = body;
 
@@ -61,12 +47,11 @@ export async function POST(request: NextRequest) {
 
     const supabase = await createClient();
 
-    // Check if approval already exists
+    // Check if approval already exists (using video_id only since we don't have users)
     const { data: existing } = await supabase
       .from("approvals")
       .select("id")
       .eq("video_id", video_id)
-      .eq("user_id", session.user.id)
       .single();
 
     let result;
@@ -93,7 +78,7 @@ export async function POST(request: NextRequest) {
         .from("approvals")
         .insert({
           video_id,
-          user_id: session.user.id,
+          user_id: null,
           approved,
           approved_at: approved ? new Date().toISOString() : null,
           notes: notes || null,
@@ -116,4 +101,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

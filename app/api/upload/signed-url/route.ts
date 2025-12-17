@@ -1,17 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/config";
 import { getBucket } from "@/lib/gcs/client";
 import { v4 as uuidv4 } from "uuid";
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const { filename, contentType } = await request.json();
 
     if (!filename || !contentType) {

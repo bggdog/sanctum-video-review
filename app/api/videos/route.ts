@@ -1,16 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/config";
 import { createClient } from "@/lib/supabase/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("videos")
@@ -33,12 +25,6 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const body = await request.json();
     const { title, description, gcs_url, status, thumbnail_url } = body;
 
@@ -56,7 +42,7 @@ export async function POST(request: NextRequest) {
         title,
         description: description || null,
         gcs_url,
-        uploaded_by: session.user.id,
+        uploaded_by: null,
         status: status || "ideation",
         thumbnail_url: thumbnail_url || null,
       })

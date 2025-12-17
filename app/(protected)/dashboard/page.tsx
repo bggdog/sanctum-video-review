@@ -1,11 +1,8 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/config";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
-  const session = await getServerSession(authOptions);
   const supabase = await createClient();
 
   // Get video counts by status
@@ -45,7 +42,7 @@ export default async function DashboardPage() {
       <div>
         <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
         <p className="mt-2 text-gray-600 dark:text-gray-300">
-          Welcome back, {session?.user?.name || session?.user?.email}
+          Welcome to Sanctum Creative
         </p>
       </div>
 

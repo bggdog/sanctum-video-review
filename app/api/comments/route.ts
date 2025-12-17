@@ -1,16 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/config";
 import { createClient } from "@/lib/supabase/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const { searchParams } = new URL(request.url);
     const videoId = searchParams.get("video_id");
 
@@ -44,12 +36,6 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const body = await request.json();
     const { video_id, timestamp, content, comment_type } = body;
 
@@ -65,7 +51,7 @@ export async function POST(request: NextRequest) {
       .from("comments")
       .insert({
         video_id,
-        user_id: session.user.id,
+        user_id: null,
         timestamp: Number(timestamp),
         content,
         comment_type: comment_type || "note",
@@ -86,4 +72,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
