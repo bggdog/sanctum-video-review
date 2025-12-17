@@ -69,7 +69,7 @@ export default function UploadPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <div>
+      <div> 
         <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">Add Video</h1>
         <p className="mt-2 text-gray-600 dark:text-gray-300">
           Add a video by pasting a Google Drive URL or any video URL

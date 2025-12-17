@@ -11,8 +11,8 @@
 ## Step 2: Copy Your Repository URL
 
 After creating the repository, GitHub will show you the URL. It will look like:
-- HTTPS: `https://github.com/YOUR_USERNAME/video-review-platform.git`
-- SSH: `git@github.com:YOUR_USERNAME/video-review-platform.git`
+- HTTPS: `https://github.com/bggdog/video-review-platform.git`
+- SSH: `git@github.com:bggdog/video-review-platform.git`
 
 **Copy the HTTPS URL** (it starts with `https://`)
 
@@ -95,4 +95,5 @@ If you still get authentication errors:
 - Verify the repository exists on GitHub
 - Try using GitHub CLI: `gh auth login`
 - Or use SSH instead of HTTPS
+
 
