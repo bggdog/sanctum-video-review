@@ -12,19 +12,31 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
+          console.error("Missing credentials");
           return null;
         }
 
         try {
           const supabase = await createClient();
 
+          // Check if Supabase client was created successfully
+          if (!supabase) {
+            console.error("Failed to create Supabase client");
+            return null;
+          }
+
           const { data, error } = await supabase.auth.signInWithPassword({
             email: credentials.email,
             password: credentials.password,
           });
 
-          if (error || !data.user) {
-            console.error("Auth error:", error);
+          if (error) {
+            console.error("Supabase auth error:", error.message, error.status);
+            return null;
+          }
+
+          if (!data.user) {
+            console.error("No user data returned from Supabase");
             return null;
           }
 
@@ -33,8 +45,8 @@ export const authOptions: NextAuthOptions = {
             email: data.user.email!,
             name: data.user.user_metadata?.name || data.user.email,
           };
-        } catch (error) {
-          console.error("Authorization error:", error);
+        } catch (error: any) {
+          console.error("Authorization error:", error?.message || error);
           return null;
         }
       },
