@@ -1,6 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { createClient } from "@/lib/supabase/server";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -17,13 +17,22 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          const supabase = await createClient();
+          // Create a simple Supabase client for authentication
+          // We don't need cookie management here, just auth
+          const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+          const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-          // Check if Supabase client was created successfully
-          if (!supabase) {
-            console.error("Failed to create Supabase client");
+          if (!supabaseUrl || !supabaseAnonKey) {
+            console.error("Missing Supabase environment variables");
             return null;
           }
+
+          const supabase = createSupabaseClient(supabaseUrl, supabaseAnonKey, {
+            auth: {
+              autoRefreshToken: false,
+              persistSession: false,
+            },
+          });
 
           const { data, error } = await supabase.auth.signInWithPassword({
             email: credentials.email,
