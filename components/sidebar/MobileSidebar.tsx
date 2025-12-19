@@ -10,11 +10,9 @@ import {
   KanbanSquare,
   BarChart3,
   Upload,
-  LogOut,
   Menu,
   X,
 } from "lucide-react";
-import { signOut } from "next-auth/react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -27,10 +25,6 @@ const navigation = [
 export default function MobileSidebar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-
-  const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/login" });
-  };
 
   return (
     <>
@@ -74,15 +68,6 @@ export default function MobileSidebar() {
                 );
               })}
             </nav>
-            <div className="border-t border-gray-800 p-4">
-              <button
-                onClick={handleSignOut}
-                className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800 hover:text-white"
-              >
-                <LogOut className="h-5 w-5" />
-                Sign Out
-              </button>
-            </div>
           </div>
         </div>
       )}

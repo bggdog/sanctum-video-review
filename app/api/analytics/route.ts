@@ -140,19 +140,19 @@ export async function POST(request: NextRequest) {
     if (youtube_comments !== undefined) payload.youtube_comments = youtube_comments;
 
     // Check if analytics entry already exists for this video, date, and platform
-    const query = supabase
+    let query = supabase
       .from("video_analytics")
       .select("id")
       .eq("video_id", video_id)
       .eq("date", date);
     
     if (platform) {
-      query.eq("platform", platform);
+      query = query.eq("platform", platform);
     } else {
-      query.is("platform", null);
+      query = query.is("platform", null);
     }
 
-    const { data: existing } = await query.single();
+    const { data: existing } = await query.maybeSingle();
 
     let result;
     if (existing) {

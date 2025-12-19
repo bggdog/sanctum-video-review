@@ -9,9 +9,7 @@ import {
   KanbanSquare,
   BarChart3,
   Upload,
-  LogOut,
 } from "lucide-react";
-import { signOut } from "next-auth/react";
 import { motion } from "framer-motion";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -25,10 +23,6 @@ const navigation = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-
-  const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/login" });
-  };
 
   return (
     <div className="flex h-screen w-64 flex-col bg-gray-900 dark:bg-gray-950 text-white border-r border-gray-800 dark:border-gray-800">
@@ -64,19 +58,10 @@ export default function Sidebar() {
           );
         })}
       </nav>
-      <div className="border-t border-gray-800 dark:border-gray-700 p-4 space-y-2">
+      <div className="border-t border-gray-800 dark:border-gray-700 p-4">
         <div className="flex items-center justify-center">
           <ThemeToggle />
         </div>
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={handleSignOut}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800 hover:text-white"
-        >
-          <LogOut className="h-5 w-5" />
-          Sign Out
-        </motion.button>
       </div>
     </div>
   );
